@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="recordplay2.js"></script>
+	<style type="text/css">
+		.recClicks{
+			border-radius: 50%;
+		}
+
+	</style>	
+<script type="text/javascript">
+	
+	
+	playbackInterruptCommand = "";
+	
+	$(document).ready(function()
+	{
+
+		$("#pauseBtn").hide();
+		$("#playBtn").hide();
+		drawing = new RecordableDrawing("canvas1");
+		// startRecording();
+		// setTimeout(function(){stopRecording();
+		// 	}, 5000);	
+		setTimeout(function(){startPlayback();
+			}, 1000);	
+		$("#stop").click(function(){
+			var btnTxt = $("#recordBtn .ui-btn-text").text();
+			if (btnTxt == 'Stop')
+				stopRecording();
+			else
+				stopRecording();
+		});
+		$("#playBtn").click(function(){
+			var id = "record1";
+			var value = localStorage.getItem(id);
+			console.log(JSON.parse(value));
+			
+			// var btnTxt = $("#playBtn .ui-btn-text").text();
+			// if (btnTxt == 'Stop')
+			// 	stopPlayback();
+			// else
+			// 	startPlayback();			
+		});
+		
+		$("#pauseBtn").click(function(){
+			var btnTxt = $("#pauseBtn .ui-btn-text").text();
+			if (btnTxt == 'Pause')
+			{
+				pausePlayback();
+			} else if (btnTxt == 'Resume')
+			{
+				resumePlayback();
+			}
+		});
+		
+		$("#clearBtn").click(function(){
+			drawing.clearCanvas();			
+		});
+	});
+	
+	function stopRecording()
+	{
+		$("#recordBtn .ui-btn-text").text("Record");
+		$("#playBtn").show();
+		$("#clearBtn").show();
+		$("#pauseBtn").hide();
+		
+		drawing.stopRecording();
+	}
+	
+	function startRecording()
+	{
+		$("#recordBtn .ui-btn-text").text("Stop");
+		$("#playBtn").hide();
+		$("#pauseBtn").hide();
+		$("#clearBtn").hide();
+		
+		drawing.startRecording();
+	}
+	
+	function stopPlayback()
+	{
+		playbackInterruptCommand = "stop";		
+	}
+	
+	function startPlayback()
+	{
+		var elem = document.getElementsByClassName("recClicks");
+			if(elem.length){
+				while (elem[0]) {
+					elem[0].parentNode.removeChild(elem[0]);
+				}
+			}
+		drawing.playRecording(function() {
+			//on playback start
+			$("#playBtn .ui-btn-text").text("Stop");
+			$("#recordBtn").hide();
+			$("#pauseBtn").show();
+			$("#clearBtn").hide();
+
+			playbackInterruptCommand = "";
+		}, function(){
+			//on playback end
+			$("#playBtn .ui-btn-text").text("Play");
+			$("#playBtn").show();
+			$("#recordBtn").show();
+			$("#clearBtn").show();
+			$("#pauseBtn").hide();
+		}, function() {
+			//on pause
+			$("#pauseBtn .ui-btn-text").text("Resume");
+			$("#recordBtn").hide();
+			$("#playBtn").hide();
+			$("#clearBtn").hide();
+			
+		}, function() {
+			//status callback
+			return playbackInterruptCommand;
+		});
+	}
+	
+	function pausePlayback()
+	{
+		playbackInterruptCommand = "pause";
+	}
+	
+	function resumePlayback()
+	{
+		playbackInterruptCommand = "";
+		drawing.resumePlayback(function(){
+			$("#pauseBtn .ui-btn-text").text("Pause");
+			$("#pauseBtn").show();
+			$("#recordBtn").hide();
+			$("#clearBtn").hide();
+			$("#playBtn").show();
+		});
+	}
+</script>
+
+</head>
+<body data-gr-c-s-loaded="true" class="ui-mobile-viewport ui-overlay-c"><div data-role="page" data-url="/temp/2012-10-03/" tabindex="0" class="ui-page ui-body-c ui-page-active" style="min-height: 372px;">
+	<div style="width: 100vw; height: 100vh; background: rgba(0, 0,0, 0.3); overflow:unset;pointer-events: none; ">
+	<div style = "width: 1200px; height: 2860px; text-align: center; " >
+	<iframe src="index.html" id="recFrame" height="2860" width="1200" frameborder = "0" style="margin-left: 75px;" ></iframe>
+	<img src="arrow-with-circle.png" id="mouse" style="height: 30px; width: 30px; z-index: 100;    position: absolute;">
+	</div>
+	
+	</div>
+	<!-- <table>
+	<tbody><tr>
+		<td>
+			<canvas id="canvas1" width="1000" height="1000" style="border: medium solid rgb(0, 0, 255);">
+			</canvas>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="#" data-role="button" data-inline="true" id="recordBtn" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-inline ui-shadow ui-btn-corner-all"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Record</span></span></a>
+			<a href="#" data-role="button" data-inline="true" id="playBtn" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-inline ui-shadow ui-btn-corner-all" style="display: none;"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Play</span></span></a>
+			<a href="#" data-role="button" data-inline="true" id="pauseBtn" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-inline ui-shadow ui-btn-corner-all" style="display: none;"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Pause</span></span></a>
+			<a href="#" data-role="button" data-inline="true" id="clearBtn" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-inline ui-shadow ui-btn-corner-all"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Clear</span></span></a>
+		</td>
+	</tr> -->
+<!-- </tbody></table> -->
+
+
+<!-- </div><div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon ui-icon-loading"></span><h1>loading</h1></div> --> 
+</body>
+</html>
