@@ -53,23 +53,6 @@ RecordableDrawing = function (canvasId)
 		event.preventDefault();
 
 	}
-
-
-	
-	// this.startRecording = function()
-	// {
-	// 	self.currentRecording = new Recording(this);
-	// 	// self.recordings = new Array();
-	// 	// self.recordings.push(self.currentRecording);
-	// 	self.currentRecording.start();
-	// }
-	
-	// this.stopRecording = function()
-	// {
-	// 	if (self.currentRecording != null)
-	// 		self.currentRecording.stop();
-	// 	self.currentRecording = null;
-	// }
 	
 	this.playRecording = function(onPlayStart, onPlayEnd, onPause, interruptActionStatus)
 	{
@@ -122,6 +105,7 @@ RecordableDrawing = function (canvasId)
 			"onPause":onPause,
 			"interruptActionStatus": interruptActionStatus
 		};
+		self.currentRecording = null;
 		if (onPause)
 			onPause();
 	}
@@ -185,7 +169,7 @@ RecordableDrawing = function (canvasId)
 	{
 		var x = actionArg.x;
 		var y = actionArg.y;
-		mouse.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
+		// mouse.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
 		switch (actionArg.type)
 		{
 		case 0: //moveto
@@ -194,11 +178,7 @@ RecordableDrawing = function (canvasId)
 			break;
 		case 1: 
 			 // handle clicks
-			//  var selCheck = isSelectorValid(actionArg.elem);
-			//  if(selCheck){
-			// 	var el = document.querySelector(actionArg.elem);
-			// 	el.click();
-			//  }
+			
 			if(actionArg){
 				
 				var playframe = document.getElementById('recFrame');
@@ -211,8 +191,8 @@ RecordableDrawing = function (canvasId)
 				
 			}
 
-			 var div = document.createElement("div");
-			 div.className = "recClicks"
+			var div = document.createElement("div");
+			div.className = "recClicks"
 			div.style.width = "10px";
 			div.style.height = "10px";
 			div.style.background = "red";
@@ -226,10 +206,11 @@ RecordableDrawing = function (canvasId)
 			break;
 		case 2 :
 			// handle scroll
+			window.scrollTo( x, y);
 
 				break;	
 		}
-		if (addToArray)
+		// if (addToArray)
 			self.actions.push(actionArg);
 	}	
 		
@@ -350,6 +331,13 @@ Recording = function (drawingArg)
 					onPause();
 				return;
 			}
+
+			
+			if (self.pauseInfo != null && status == "")
+			{
+				self.resume(onPlayEnd, isFirst);	
+				return;
+			}
 			
 			var intervalDiff = -1;
 			var isLast = true;
@@ -366,16 +354,27 @@ Recording = function (drawingArg)
 	
 	this.resume = function()
 	{
-		if (!self.pauseInfo)
+		if (!self.pauseInfo){
 			return;
-		
+		}
+		var intervalDiff = -1;
+		var isLast = true;
+		if (self.pauseInfo.actionset.next != null)
+		{
+			isLast = false;
+			intervalDiff = self.pauseInfo.actionset.next.interval - self.pauseInfo.actionset.interval;
+		}
+		if (intervalDiff >= 0){
 		self.scheduleDraw(self.pauseInfo.actionset, 0, 
 			self.pauseInfo.callbackFunc, 
 			self.pauseInfo.onPlaybackEnd, 
 			self.pauseInfo.onPause,
 			self.pauseInfo.isFirst,
 			self.pauseInfo.interruptActionsStatus);
+
 			self.pauseInfo = null;
+			self.drawActions(self.pauseInfo.actionset.actions, onPlayEnd, isFirst, isLast);
+		}
 	}	
 
 	this.drawActions = function (actionArray, onPlayEnd, isFirst, isLast)
