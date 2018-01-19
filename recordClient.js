@@ -30,6 +30,7 @@ RecordableDrawing = function (canvasId)
 	this.bgColor = "rgb(255,255,255)";
 	var currentLineWidth = 5;
 	var pauseInfo = null;
+	var validKey = ['Delete','ArrowUp','ArrowLeft','ArrowDown','ArrowRight','Backspace'];
 	//mouse
 	var mouse = document.getElementById("mouse");
     onMouseMove = function(event)
@@ -53,8 +54,6 @@ RecordableDrawing = function (canvasId)
 		if (self.currentRecording != null)
 			self.currentRecording.addAction(currAction);
 		event.preventDefault();
-		
-
 	}
 	onScroll = function(event){
 		var x = 0;
@@ -66,13 +65,13 @@ RecordableDrawing = function (canvasId)
 	}
 	onkey = function(event){
 		var ce = selectorQuery(event.target);
-		if((event.key.length <= 1 || event.key === 'Delete' || event.key === 'Backspace') && event.target.nodeName == 'INPUT' && event.target.type != 'password'){
+		if((event.key.length <= 1 || validKey.indexOf(event.key) != -1) && event.target.nodeName == 'INPUT' && event.target.type != 'password'){
 			var x = event.key;
 			var y = ce;
 			var	currAction = new Point(x,y,3);
 			if (self.currentRecording != null)
 			self.currentRecording.addAction(currAction);
-			// event.preventDefault();
+		event.preventDefault();
 		}
 	}
 
