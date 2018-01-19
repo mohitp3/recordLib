@@ -335,6 +335,7 @@ Recording = function (drawingArg)
 			
 			if (self.pauseInfo != null && status == "")
 			{
+				
 				self.resume(onPlayEnd, isFirst);	
 				return;
 			}
@@ -352,11 +353,12 @@ Recording = function (drawingArg)
 		},interval);
 	}
 	
-	this.resume = function()
+	this.resume = function(onPlayEnd, isFirst)
 	{
 		if (!self.pauseInfo){
 			return;
 		}
+		
 		var intervalDiff = -1;
 		var isLast = true;
 		if (self.pauseInfo.actionset.next != null)
@@ -371,9 +373,9 @@ Recording = function (drawingArg)
 			self.pauseInfo.onPause,
 			self.pauseInfo.isFirst,
 			self.pauseInfo.interruptActionsStatus);
-
+			resume = self.pauseInfo;
 			self.pauseInfo = null;
-			self.drawActions(self.pauseInfo.actionset.actions, onPlayEnd, isFirst, isLast);
+			self.drawActions(resume.actionset.actions, onPlayEnd, isFirst, isLast);
 		}
 	}	
 
