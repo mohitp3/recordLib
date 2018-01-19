@@ -56,6 +56,14 @@ RecordableDrawing = function (canvasId)
 		
 
 	}
+	onScroll = function(event){
+		var x = 0;
+		var y = Math.floor(window.scrollY);
+		var	currAction = new Point(x,y,2);
+		if (self.currentRecording != null)
+			self.currentRecording.addAction(currAction);
+		event.preventDefault();
+	}
 	
 	this.startRecording = function()
 	{
@@ -85,6 +93,7 @@ RecordableDrawing = function (canvasId)
 		self.height = $(self.canvas).height();
 		document.addEventListener("mousemove", onMouseMove);
 		document.addEventListener("click", onClickRec);
+		window.addEventListener('scroll', onScroll );
 	}
 	
 	__init();
