@@ -64,7 +64,19 @@ RecordableDrawing = function (canvasId)
 			self.currentRecording.addAction(currAction);
 		event.preventDefault();
 	}
-	
+	onkey = function(event){
+		var ce = selectorQuery(event.target);
+		if((event.key.length <= 1 || event.key === 'Delete' || event.key === 'Backspace') && event.target.nodeName == 'INPUT' && event.target.type != 'password'){
+			var x = event.key;
+			var y = ce;
+			var	currAction = new Point(x,y,3);
+			if (self.currentRecording != null)
+			self.currentRecording.addAction(currAction);
+			// event.preventDefault();
+		}
+	}
+
+
 	this.startRecording = function()
 	{
 		self.currentRecording = new Recording(this);
@@ -94,6 +106,7 @@ RecordableDrawing = function (canvasId)
 		document.addEventListener("mousemove", onMouseMove);
 		document.addEventListener("click", onClickRec);
 		window.addEventListener('scroll', onScroll );
+		window.addEventListener("keydown", onkey);
 	}
 	
 	__init();
