@@ -5,6 +5,7 @@ var value = localStorage.getItem(id);
 var rec1 = JSON.parse(value);
 
 
+
 RecordableDrawing = function (canvasId)
 {
 	var self = this;
@@ -202,13 +203,51 @@ RecordableDrawing = function (canvasId)
 			div.style.top = y+"px";
 			div.style.opacity = 0.3;
 			document.body.appendChild(div);
-			
 			break;
 		case 2 :
 			// handle scroll
 			window.scrollTo( x, y);
 
-				break;	
+			break;	
+		case 3 :
+			// handle key strokes
+			var msg;
+			var playframe = document.getElementById('recFrame');
+			var contentWindow = playframe.contentWindow;
+			if( actionArg && x.length <= 1){
+				
+				msg = {
+					type : 'getVal',
+					elem : actionArg.y
+				}
+				
+				contentWindow.postMessage(msg, "*");
+			}
+			if(currentValue == 'nvEmpty'){
+					msg = {
+						type : 'focus',
+						elem : actionArg.y,
+						val : actionArg.x
+					}
+					contentWindow.postMessage(msg, "*");
+			}else {
+				if(x  === 'Backspace'){
+					msg = {
+						type : 'focus',
+						elem : actionArg.y,
+						val : currentValue.substring(0, currentValue.length-1)
+					}
+				}else{
+					msg = {
+						type : 'focus',
+						elem : actionArg.y,
+						val : currentValue + x
+					}
+				}
+				contentWindow.postMessage(msg, "*");
+			}		
+			break;	
+
 		}
 		// if (addToArray)
 			self.actions.push(actionArg);

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gp Bootstrap Template</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">      
+	<link href="css/main.css" rel="stylesheet">
+     <link href="css/responsive.css" rel="stylesheet">
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <!-- <script src="recordClient.js"></script>    -->
+    <script>
+    // parent.postMessage(msg, document.referrer);
+    var msg = {
+          type : 'ready'
+      }
+    window.addEventListener("message", messagelistener, false);
+        function messagelistener(evt){
+            console.log(evt);
+            if(evt.data.type == 'click'){
+                var selCheck = isSelectorValid(evt.data.elem);
+                if(selCheck){
+                  var el = document.querySelector(evt.data.elem);
+                  el.click();
+                }
+            }else if(evt.data.type == 'focus'){
+              var selCheck = isSelectorValid(evt.data.elem);
+                if(selCheck){
+                  var el = document.querySelector(evt.data.elem);
+                  el.focus();
+                  el.value = evt.data.val;
+                  var elValue = el.value;
+                  var msg = {
+                    type : 'value',
+                    val : elValue
+                  }
+                  parent.postMessage(msg , '*');
+                }
+
+                }
+
+            }
+        isSelectorValid = function (selector)
+        {
+            try {
+                document.querySelector(selector);
+            } catch (x) {
+                return false;
+            }
+            return true;
+        }
+
+
+    </script>
+
+
+  </head>
+  <body class="homepage">   
+	<form id="nv" >
+      First name:<br>
+      <input type="text" name="firstname"><br>
+      Last name:<br>
+      <input type="text" name="lastname">
+    </form>
+	
+  </body>
+</html>
