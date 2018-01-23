@@ -31,6 +31,7 @@ RecordableDrawing = function (canvasId)
 	var currentLineWidth = 5;
 	var pauseInfo = null;
 	var validKey = ['Delete','ArrowUp','ArrowLeft','ArrowDown','ArrowRight','Backspace'];
+	var inputTypes = ['url','text','tel','search','number','email',];
 	//mouse
 	var mouse = document.getElementById("mouse");
     onMouseMove = function(event)
@@ -66,15 +67,18 @@ RecordableDrawing = function (canvasId)
 	onkey = function(event){
 		var ce = selectorQuery(event.target);
 		if((event.key.length <= 1 || validKey.indexOf(event.key) != -1) && event.target.nodeName == 'INPUT' && event.target.type != 'password'){
+			var blinker = '';
+			if(inputTypes.indexOf(event.target.type)){
+				blinker = event.target.selectionEnd;
+			}
 			var x = event.key;
 			var y = ce;
-			var	currAction = new Point(x,y,3);
+			var	currAction = new Point(x,y,3,blinker);
 			if (self.currentRecording != null)
 			self.currentRecording.addAction(currAction);
-		event.preventDefault();
+		// event.preventDefault();
 		}
 	}
-
 
 	this.startRecording = function()
 	{

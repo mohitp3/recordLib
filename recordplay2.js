@@ -231,11 +231,24 @@ RecordableDrawing = function (canvasId)
 					}
 					contentWindow.postMessage(msg, "*");
 			}else {
+				var cursorPos = actionArg.elem;
 				if(x  === 'Backspace'){
 					msg = {
 						type : 'focus',
 						elem : actionArg.y,
-						val : currentValue.substring(0, currentValue.length-1)
+						val : currentValue.substring(0,cursorPos-1) + currentValue.substring(cursorPos)
+					}
+				}else if(x  === 'Delete'){
+					msg = {
+						type : 'focus',
+						elem : actionArg.y,
+						val : currentValue.slice(0,cursorPos) + currentValue.slice(cursorPos+1)
+					}
+				}else if (x  === 'ArrowUp' || x  === 'ArrowLeft' || x  === 'ArrowRight' || x  === 'ArrowDown'){
+					msg = {
+						type : 'focus',
+						elem : actionArg.y,
+						val : currentValue
 					}
 				}else{
 					msg = {
