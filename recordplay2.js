@@ -223,6 +223,10 @@ RecordableDrawing = function (canvasId)
 				
 				contentWindow.postMessage(msg, "*");
 			}
+			if(currentElement !=  actionArg.y){
+				currentValue = 'nvEmpty';
+				currentElement =  actionArg.y;
+			}
 			if(currentValue == 'nvEmpty'){
 					msg = {
 						type : 'focus',
